@@ -22,22 +22,23 @@ const state = {
 
 const actions = {
     init: async ({ state, actions, effects }) => {
-        state.ui.isLoadingCourse = true;
-        try {
-            let course = effects.loadCourseFromStorage();
+        // state.ui.isLoadingCourse = true;
+        // try {
+        //     let course = effects.loadCourseFromStorage();
 
-            if(course) {
-                state.course = course;
-            } else {
-                const course = await effects.fetchCourse();
-                state.course = await normalizeCourseJson(course);
-            }
-        } catch(e) {
-            state.course = CoursePayload;
-            console.error(e);
-        } finally {
-            state.ui.isLoadingCourse = false;
-        }
+        //     if(course) {
+        //         state.course = course;
+        //     } else {
+        //         const course = await effects.fetchCourse();
+        //         state.course = await normalizeCourseJson(course);
+        //     }
+        // } catch(e) {
+        //     state.course = CoursePayload;
+        //     console.error(e);
+        // } finally {
+        //     state.ui.isLoadingCourse = false;
+        // }
+        return await Promise.resolve();
     },
     updateTag: ({ state, actions }, { tags, unit }) => {
         const tagValues = tags.map(t => t.id);
@@ -70,6 +71,7 @@ const actions = {
                 if(json) {
                     state.course = await normalizeCourseJson(json);
                     state.ui.processJsonResult = 'success';
+                    actions.saveJsonToLocalStorage();
                 } else {
                     state.ui.processJsonResult = 'fail';
                     state.ui.processJsonError = 'Be smart and set a proper JSON format 🤪'
@@ -90,6 +92,9 @@ const actions = {
     },
     saveJsonToLocalStorage: ({state}) => {
         localStorage.setItem(COURSE_STORAGE_KEY, JSON.stringify(state.course));
+    },
+    loadFromStorage: ({state}) => {
+        state.course = CoursePayload;
     },
     refreshCourseTags: ({state}) => {
         if(!state.course) return;
@@ -132,7 +137,13 @@ const effects = {
     },
     loadCourseFromStorage: () => {
         const storeItem = localStorage.getItem(COURSE_STORAGE_KEY);
-        return storeItem && JSON.parse(storeItem);
+        let storageCourse = storeItem && JSON.parse(storeItem);
+
+        if(!storageCourse) {
+            storageCourse = CoursePayload;
+        }
+
+        return storageCourse;
     }
 }
 
