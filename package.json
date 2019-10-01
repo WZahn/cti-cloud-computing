@@ -2,7 +2,7 @@
   "name": "cloud-service-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://alanlima.github.io/cti-cloud-computing",
+  "homepage": "https://WZahn.github.io/cti-cloud-computing",
   "dependencies": {
     "file-saver": "^2.0.2",
     "gh-pages": "^2.0.1",
